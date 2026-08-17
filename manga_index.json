@@ -941,5 +941,28 @@
         "sourceCodeLanguage": 1,
         "notes": "",
         "pkgPath": "manga/src/all/comick.js"
+    },
+    {
+        "name": "E-Hentai",
+        "id": 182940284,
+        "baseUrl": "https://e-hentai.org",
+        "lang": "all",
+        "typeSource": "single",
+        "iconUrl": "https://e-hentai.org/favicon.ico",
+        "dateFormat": "",
+        "dateFormatLocale": "",
+        "isNsfw": true,
+        "hasCloudflare": false,
+        "sourceCodeUrl": "https://raw.githubusercontent.com/vzpyr/mangayomi/main/js/manga/src/all/ehentai.js",
+        "apiUrl": "https://api.e-hentai.org/api.php",
+        "version": "1.0.0",
+        "isManga": true,
+        "itemType": 0,
+        "isFullData": false,
+        "appMinVerReq": "0.5.0",
+        "additionalParams": "",
+        "sourceCodeLanguage": 1,
+        "notes": "",
+        "pkgPath": "manga/src/all/ehentai.js"
     }
 ]
