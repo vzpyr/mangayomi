@@ -44,5 +44,28 @@
         "sourceCodeLanguage": 1,
         "notes": "",
         "pkgPath": "novel/src/en/novelfire.js"
+    },
+    {
+        "name": "Baka-Tsuki",
+        "id": 617294021,
+        "baseUrl": "https://www.baka-tsuki.org",
+        "lang": "en",
+        "typeSource": "single",
+        "iconUrl": "https://www.baka-tsuki.org/favicon.ico",
+        "dateFormat": "",
+        "dateFormatLocale": "",
+        "isNsfw": false,
+        "hasCloudflare": false,
+        "sourceCodeUrl": "https://raw.githubusercontent.com/vzpyr/mangayomi/main/js/novel/src/en/bakatsuki.js",
+        "apiUrl": "https://www.baka-tsuki.org/project/api.php",
+        "version": "1.0.0",
+        "isManga": false,
+        "itemType": 2,
+        "isFullData": false,
+        "appMinVerReq": "0.6.1",
+        "additionalParams": "",
+        "sourceCodeLanguage": 1,
+        "notes": "Classic community light novel translations (including Gekkou, SAO, Index, etc.)",
+        "pkgPath": "novel/src/en/bakatsuki.js"
     }
 ]
