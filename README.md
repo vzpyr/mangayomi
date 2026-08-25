@@ -1,8 +1,8 @@
-# mangayomi
+# Mangayomi
 
-mangayomi extensions
+Extensions for Mangayomi
 
-## add
+## Repositories
 
 `https://raw.githubusercontent.com/vzpyr/mangayomi/main/anime_index.json`
 `https://raw.githubusercontent.com/vzpyr/mangayomi/main/manga_index.json`
