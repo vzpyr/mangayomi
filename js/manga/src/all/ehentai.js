@@ -1,27 +1,28 @@
 const mangayomiSources = [
   {
-    "name": "E-Hentai",
-    "id": 182940284,
-    "baseUrl": "https://e-hentai.org",
-    "lang": "all",
-    "typeSource": "single",
-    "iconUrl": "https://e-hentai.org/favicon.ico",
-    "dateFormat": "",
-    "dateFormatLocale": "",
-    "isNsfw": true,
-    "hasCloudflare": false,
-    "sourceCodeUrl": "https://raw.githubusercontent.com/vzpyr/mangayomi/main/js/manga/src/all/ehentai.js",
-    "apiUrl": "https://api.e-hentai.org/api.php",
-    "version": "1.0.0",
-    "isManga": true,
-    "itemType": 0,
-    "isFullData": false,
-    "appMinVerReq": "0.5.0",
-    "additionalParams": "",
-    "sourceCodeLanguage": 1,
-    "notes": "",
-    "pkgPath": "manga/src/all/ehentai.js"
-  }
+    name: "E-Hentai",
+    id: 182940284,
+    baseUrl: "https://e-hentai.org",
+    lang: "all",
+    typeSource: "single",
+    iconUrl: "https://e-hentai.org/favicon.ico",
+    dateFormat: "",
+    dateFormatLocale: "",
+    isNsfw: true,
+    hasCloudflare: false,
+    sourceCodeUrl:
+      "https://raw.githubusercontent.com/vzpyr/mangayomi/main/js/manga/src/all/ehentai.js",
+    apiUrl: "https://api.e-hentai.org/api.php",
+    version: "1.0.1",
+    isManga: true,
+    itemType: 0,
+    isFullData: false,
+    appMinVerReq: "0.5.0",
+    additionalParams: "",
+    sourceCodeLanguage: 1,
+    notes: "",
+    pkgPath: "manga/src/all/ehentai.js",
+  },
 ];
 
 class DefaultExtension extends MProvider {
@@ -33,11 +34,11 @@ class DefaultExtension extends MProvider {
 
   getBaseUrl() {
     try {
-      var pref = new SharedPreferences().get("ehentai_pref_domain");
+      const pref = new SharedPreferences().get("ehentai_pref_domain");
       if (pref && typeof pref === "string" && pref.trim().length > 0) {
         return pref.trim().replace(/\/+$/, "");
       }
-    } catch (e) {}
+    } catch (_) {}
     if (this.source && this.source.baseUrl) {
       return this.source.baseUrl.replace(/\/+$/, "");
     }
@@ -45,22 +46,27 @@ class DefaultExtension extends MProvider {
   }
 
   getHeaders(url) {
-    var base = this.getBaseUrl();
-    var cookieStr = "nw=1";
+    const base = this.getBaseUrl();
+    let cookieStr = "nw=1";
 
     try {
-      var customCookie = new SharedPreferences().get("ehentai_pref_cookie");
-      if (customCookie && typeof customCookie === "string" && customCookie.trim().length > 0) {
-        cookieStr += "; " + customCookie.trim();
+      const customCookie = new SharedPreferences().get("ehentai_pref_cookie");
+      if (
+        customCookie &&
+        typeof customCookie === "string" &&
+        customCookie.trim().length > 0
+      ) {
+        cookieStr += `; ${customCookie.trim()}`;
       }
-    } catch (e) {}
+    } catch (_) {}
 
     return {
       "User-Agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-      Referer: base + "/",
+      Referer: `${base}/`,
       Cookie: cookieStr,
-      Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,application/json,*/*;q=0.8",
+      Accept:
+        "text/html,application/xhtml+xml,application/xml;q=0.9,application/json,*/*;q=0.8",
     };
   }
 
@@ -80,7 +86,7 @@ class DefaultExtension extends MProvider {
 
   extractGidAndToken(input) {
     if (!input) return null;
-    var str = "";
+    let str = "";
     if (typeof input === "string") {
       str = input;
     } else if (typeof input === "object" && input !== null) {
@@ -88,70 +94,79 @@ class DefaultExtension extends MProvider {
     }
     str = String(str).trim();
 
-    var m = str.match(/(?:https?:\/\/[^\/]+)?\/(?:g|s|mpv)\/([a-zA-Z0-9]+)[\/-]([a-zA-Z0-9]+)/i);
+    const m = str.match(
+      /(?:https?:\/\/[^\/]+)?\/(?:g|s|mpv)\/([a-zA-Z0-9]+)[\/-]([a-zA-Z0-9]+)/i,
+    );
     if (m) {
-      var p1 = m[1];
-      var p2 = m[2];
+      const p1 = m[1];
+      const p2 = m[2];
       if (/^\d+$/.test(p1)) return [parseInt(p1), p2];
       if (/^\d+$/.test(p2)) return [parseInt(p2), p1];
     }
 
-    var m2 = str.match(/(\d+)[\/_]([a-zA-Z0-9]{8,15})/i);
+    const m2 = str.match(/(\d+)[\/_]([a-zA-Z0-9]{8,15})/i);
     if (m2) return [parseInt(m2[1]), m2[2]];
 
     return null;
   }
 
   parseGalleryList(html) {
-    var list = [];
+    const list = [];
     if (!html) return list;
 
-    var rowRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
-    var rowMatch;
-    var seen = {};
+    const rowRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
+    let rowMatch;
+    const seen = new Set();
 
     while ((rowMatch = rowRegex.exec(html)) !== null) {
-      var rowContent = rowMatch[1];
-      var linkM = rowContent.match(/href=["'](https?:\/\/[^\/]+)?(\/g\/(\d+)\/([a-zA-Z0-9]+)\/?)["']/i);
-      var titleM = rowContent.match(/class=["']glink["']>([\s\S]*?)<\/div>/i);
-      var imgM = rowContent.match(/<img[^>]+(?:data-src|src)=["']([^"']+)["']/i);
+      const rowContent = rowMatch[1];
+      const linkM = rowContent.match(
+        /href=["'](https?:\/\/[^\/]+)?(\/g\/(\d+)\/([a-zA-Z0-9]+)\/?)["']/i,
+      );
+      const titleM = rowContent.match(/class=["']glink["']>([\s\S]*?)<\/div>/i);
+      const imgM = rowContent.match(
+        /<img[^>]+(?:data-src|src)=["']([^"']+)["']/i,
+      );
 
       if (linkM && titleM) {
-        var gid = linkM[3];
-        if (!seen[gid]) {
-          seen[gid] = true;
-          var link = linkM[2].endsWith("/") ? linkM[2] : linkM[2] + "/";
+        const gid = linkM[3];
+        if (!seen.has(gid)) {
+          seen.add(gid);
+          const link = linkM[2].endsWith("/") ? linkM[2] : `${linkM[2]}/`;
           list.push({
             name: this.cleanText(titleM[1]),
             imageUrl: imgM ? imgM[1] : "",
-            link: link,
+            link,
           });
         }
       }
     }
 
     if (list.length === 0) {
-      var linkRegex = /<a[^>]+href=["'](https?:\/\/[^\/]+)?(\/g\/(\d+)\/([a-zA-Z0-9]+)\/?)["'][^>]*>([\s\S]*?)<\/a>/gi;
-      var match;
+      const linkRegex =
+        /<a[^>]+href=["'](https?:\/\/[^\/]+)?(\/g\/(\d+)\/([a-zA-Z0-9]+)\/?)["'][^>]*>([\s\S]*?)<\/a>/gi;
+      let match;
 
       while ((match = linkRegex.exec(html)) !== null) {
-        var path = match[2];
-        var gId = match[3];
-        var inner = match[5];
+        const path = match[2];
+        const gId = match[3];
+        const inner = match[5];
 
-        if (seen[gId]) continue;
+        if (seen.has(gId)) continue;
 
-        var tMatch =
+        const tMatch =
           inner.match(/class=["']glink["']>([\s\S]*?)<\/div>/i) ||
           inner.match(/alt=["']([^"']+)["']/i);
 
         if (tMatch) {
-          seen[gId] = true;
-          var iMatch = inner.match(/<img[^>]+(?:data-src|src)=["']([^"']+)["']/i);
+          seen.add(gId);
+          const iMatch = inner.match(
+            /<img[^>]+(?:data-src|src)=["']([^"']+)["']/i,
+          );
           list.push({
             name: this.cleanText(tMatch[1]),
             imageUrl: iMatch ? iMatch[1] : "",
-            link: path.endsWith("/") ? path : path + "/",
+            link: path.endsWith("/") ? path : `${path}/`,
           });
         }
       }
@@ -161,36 +176,36 @@ class DefaultExtension extends MProvider {
   }
 
   async getPopular(page) {
-    page = parseInt(page) || 1;
-    var base = this.getBaseUrl();
-    var url = page === 1 ? base + "/popular" : base + "/?page=" + (page - 1);
-    var res = await this.client.get(url, this.getHeaders(url));
-    var list = this.parseGalleryList(res ? res.body : "");
-    var hasNextPage = page < 50 && list.length >= 10;
-    return { list: list, hasNextPage: hasNextPage };
+    const p = parseInt(page) || 1;
+    const base = this.getBaseUrl();
+    const url = p === 1 ? `${base}/popular` : `${base}/?page=${p - 1}`;
+    const res = await this.client.get(url, this.getHeaders(url));
+    const list = this.parseGalleryList(res ? res.body : "");
+    const hasNextPage = p < 50 && list.length >= 10;
+    return { list, hasNextPage };
   }
 
   async getLatestUpdates(page) {
-    page = parseInt(page) || 1;
-    var base = this.getBaseUrl();
-    var url = base + "/?page=" + (page - 1);
-    var res = await this.client.get(url, this.getHeaders(url));
-    var list = this.parseGalleryList(res ? res.body : "");
-    var hasNextPage = list.length >= 10;
-    return { list: list, hasNextPage: hasNextPage };
+    const p = parseInt(page) || 1;
+    const base = this.getBaseUrl();
+    const url = `${base}/?page=${p - 1}`;
+    const res = await this.client.get(url, this.getHeaders(url));
+    const list = this.parseGalleryList(res ? res.body : "");
+    const hasNextPage = list.length >= 10;
+    return { list, hasNextPage };
   }
 
   async search(query, page, filters) {
-    page = parseInt(page) || 1;
-    var base = this.getBaseUrl();
-    var params = ["page=" + (page - 1)];
+    const p = parseInt(page) || 1;
+    const base = this.getBaseUrl();
+    const params = [`page=${p - 1}`];
 
-    var qParts = [];
+    const qParts = [];
     if (query && typeof query === "string" && query.trim().length > 0) {
       qParts.push(query.trim());
     }
 
-    var categoryBits = {
+    const categoryBits = {
       Doujinshi: 2,
       Manga: 4,
       "Artist CG": 8,
@@ -203,27 +218,28 @@ class DefaultExtension extends MProvider {
       Misc: 1,
     };
 
-    var disabledCatsMask = 0;
+    let disabledCatsMask = 0;
 
-    if (filters && Array.isArray(filters)) {
-      for (var i = 0; i < filters.length; i++) {
-        var f = filters[i];
+    if (Array.isArray(filters)) {
+      for (const f of filters) {
         if (!f) continue;
-
         if (f.name === "Language" && f.values && f.values[f.state]) {
-          var langVal = f.values[f.state].value;
+          const langVal = f.values[f.state].value;
           if (langVal && langVal !== "all") {
-            qParts.push("language:" + langVal);
+            qParts.push(`language:${langVal}`);
           }
-        } else if (f.name === "Minimum Rating" && f.values && f.values[f.state]) {
-          var minR = f.values[f.state].value;
+        } else if (
+          f.name === "Minimum Rating" &&
+          f.values &&
+          f.values[f.state]
+        ) {
+          const minR = f.values[f.state].value;
           if (minR && minR !== "0") {
             params.push("f_sr=on");
-            params.push("f_srdd=" + minR);
+            params.push(`f_srdd=${minR}`);
           }
         } else if (f.name === "Categories" && Array.isArray(f.state)) {
-          for (var c = 0; c < f.state.length; c++) {
-            var catItem = f.state[c];
+          for (const catItem of f.state) {
             if (catItem.state === false && categoryBits[catItem.name]) {
               disabledCatsMask += categoryBits[catItem.name];
             }
@@ -233,22 +249,22 @@ class DefaultExtension extends MProvider {
     }
 
     if (disabledCatsMask > 0) {
-      params.push("f_cats=" + disabledCatsMask);
+      params.push(`f_cats=${disabledCatsMask}`);
     }
 
     if (qParts.length > 0) {
-      params.push("f_search=" + encodeURIComponent(qParts.join(" ")));
+      params.push(`f_search=${encodeURIComponent(qParts.join(" "))}`);
     }
 
-    var searchUrl = base + "/?" + params.join("&");
-    var res = await this.client.get(searchUrl, this.getHeaders(searchUrl));
-    var list = this.parseGalleryList(res ? res.body : "");
-    var hasNextPage = list.length >= 10;
-    return { list: list, hasNextPage: hasNextPage };
+    const searchUrl = `${base}/?${params.join("&")}`;
+    const res = await this.client.get(searchUrl, this.getHeaders(searchUrl));
+    const list = this.parseGalleryList(res ? res.body : "");
+    const hasNextPage = list.length >= 10;
+    return { list, hasNextPage };
   }
 
   async getDetail(url) {
-    var extracted = this.extractGidAndToken(url);
+    const extracted = this.extractGidAndToken(url);
     if (!extracted) {
       return {
         name: "Gallery",
@@ -263,41 +279,44 @@ class DefaultExtension extends MProvider {
       };
     }
 
-    var gid = extracted[0];
-    var token = extracted[1];
-    var base = this.getBaseUrl();
-    var detailUrl = base + "/g/" + gid + "/" + token + "/";
+    const [gid, token] = extracted;
+    const base = this.getBaseUrl();
+    const detailUrl = `${base}/g/${gid}/${token}/`;
 
-    var res = await this.client.get(detailUrl, this.getHeaders(detailUrl));
-    var html = res ? res.body : "";
+    const res = await this.client.get(detailUrl, this.getHeaders(detailUrl));
+    const html = res ? res.body : "";
 
-    var title = "";
-    var imageUrl = "";
-    var author = "";
-    var artist = "";
-    var genres = [];
-    var descriptionParts = [];
-    var postedDate = null;
-    var uploader = "";
+    let title = "";
+    let imageUrl = "";
+    let author = "";
+    let artist = "";
+    const genres = [];
+    const descriptionParts = [];
+    let postedDate = null;
+    let uploader = "";
 
     if (html) {
-      var hMatch =
+      const hMatch =
         html.match(/<h1[^>]+id=["']gn["'][^>]*>([\s\S]*?)<\/h1>/i) ||
         html.match(/<h1[^>]+id=["']gj["'][^>]*>([\s\S]*?)<\/h1>/i) ||
         html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
       if (hMatch) title = this.cleanText(hMatch[1]);
 
-      var imgM =
-        html.match(/<div[^>]+id=["']gd1["'][^>]*>[\s\S]*?<div[^>]+style=["'][^"']*url\(([^)]+)\)[^"']*["']/i) ||
-        html.match(/<div[^>]+id=["']gd1["'][^>]*>[\s\S]*?<img[^>]+src=["']([^"']+)["']/i);
+      const imgM =
+        html.match(
+          /<div[^>]+id=["']gd1["'][^>]*>[\s\S]*?<div[^>]+style=["'][^"']*url\(([^)]+)\)[^"']*["']/i,
+        ) ||
+        html.match(
+          /<div[^>]+id=["']gd1["'][^>]*>[\s\S]*?<img[^>]+src=["']([^"']+)["']/i,
+        );
       if (imgM) imageUrl = imgM[1].replace(/['"]/g, "");
 
-      var tagRegex = /<a[^>]+id=["']ta_([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
-      var tMatch;
+      const tagRegex = /<a[^>]+id=["']ta_([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+      let tMatch;
       while ((tMatch = tagRegex.exec(html)) !== null) {
-        var rawTag = tMatch[1].replace(/_/g, " ");
-        var tagName = this.cleanText(tMatch[2]);
-        var fullTag = rawTag.includes(":") ? rawTag : (tagName || rawTag);
+        const rawTag = tMatch[1].replace(/_/g, " ");
+        const tagName = this.cleanText(tMatch[2]);
+        const fullTag = rawTag.includes(":") ? rawTag : tagName || rawTag;
 
         if (fullTag.startsWith("artist:")) {
           artist = fullTag.replace(/^artist:/, "").trim();
@@ -306,125 +325,141 @@ class DefaultExtension extends MProvider {
           author = fullTag.replace(/^group:/, "").trim();
         }
 
-        if (genres.indexOf(fullTag) === -1) {
+        if (!genres.includes(fullTag)) {
           genres.push(fullTag);
         }
       }
 
-      var uploaderMatch = html.match(/<div[^>]+id=["']gdn["'][^>]*>[\s\S]*?<a[^>]*>([\s\S]*?)<\/a>/i);
+      const uploaderMatch = html.match(
+        /<div[^>]+id=["']gdn["'][^>]*>[\s\S]*?<a[^>]*>([\s\S]*?)<\/a>/i,
+      );
       if (uploaderMatch) {
         uploader = this.cleanText(uploaderMatch[1]);
         if (!author) author = uploader;
       }
 
-      var catMatch = html.match(/<div[^>]+id=["']gdc["'][^>]*>[\s\S]*?<div[^>]+class=["'][^"']*cs[^"']*["'][^>]*>([\s\S]*?)<\/div>/i);
+      const catMatch = html.match(
+        /<div[^>]+id=["']gdc["'][^>]*>[\s\S]*?<div[^>]+class=["'][^"']*cs[^"']*["'][^>]*>([\s\S]*?)<\/div>/i,
+      );
       if (catMatch) {
-        var catName = this.cleanText(catMatch[1]);
-        if (catName && genres.indexOf(catName) === -1) {
+        const catName = this.cleanText(catMatch[1]);
+        if (catName && !genres.includes(catName)) {
           genres.unshift(catName);
         }
       }
 
-      var dateMatch = html.match(/<td[^>]+class=["']gdt1["'][^>]*>Posted:<\/td>\s*<td[^>]+class=["']gdt2["'][^>]*>([\s\S]*?)<\/td>/i);
+      const dateMatch = html.match(
+        /<td[^>]+class=["']gdt1["'][^>]*>Posted:<\/td>\s*<td[^>]+class=["']gdt2["'][^>]*>([\s\S]*?)<\/td>/i,
+      );
       if (dateMatch) {
-        var dateStr = this.cleanText(dateMatch[1]);
+        const dateStr = this.cleanText(dateMatch[1]);
         if (dateStr) {
-          postedDate = String(new Date(dateStr + " UTC").getTime());
+          postedDate = String(new Date(`${dateStr} UTC`).getTime());
         }
       }
 
-      var lengthMatch = html.match(/<td[^>]+class=["']gdt1["'][^>]*>Length:<\/td>\s*<td[^>]+class=["']gdt2["'][^>]*>([\s\S]*?)<\/td>/i);
+      const lengthMatch = html.match(
+        /<td[^>]+class=["']gdt1["'][^>]*>Length:<\/td>\s*<td[^>]+class=["']gdt2["'][^>]*>([\s\S]*?)<\/td>/i,
+      );
       if (lengthMatch) {
-        descriptionParts.push("Pages: " + this.cleanText(lengthMatch[1]));
+        descriptionParts.push(`Pages: ${this.cleanText(lengthMatch[1])}`);
       }
 
-      var ratingMatch = html.match(/<td[^>]+id=["']rating_label["'][^>]*>([\s\S]*?)<\/td>/i);
+      const ratingMatch = html.match(
+        /<td[^>]+id=["']rating_label["'][^>]*>([\s\S]*?)<\/td>/i,
+      );
       if (ratingMatch) {
-        descriptionParts.push("Rating: " + this.cleanText(ratingMatch[1]));
+        descriptionParts.push(`Rating: ${this.cleanText(ratingMatch[1])}`);
       }
     }
 
-    var chapters = [
+    const chapters = [
       {
         name: "Chapter 1",
-        url: "/g/" + gid + "/" + token + "/",
+        url: `/g/${gid}/${token}/`,
         dateUpload: postedDate || String(Date.now()),
         scanlator: uploader || author || "",
       },
     ];
 
     return {
-      name: title || "Gallery " + gid,
-      imageUrl: imageUrl,
+      name: title || `Gallery ${gid}`,
+      imageUrl,
       link: detailUrl,
       description: descriptionParts.join("\n"),
-      author: author,
-      artist: artist,
+      author,
+      artist,
       genre: genres,
       status: 1,
-      chapters: chapters,
+      chapters,
     };
   }
 
   async getPageList(url) {
-    var extracted = this.extractGidAndToken(url);
-    if (!extracted) {
-      return [];
-    }
+    const extracted = this.extractGidAndToken(url);
+    if (!extracted) return [];
 
-    var gid = extracted[0];
-    var token = extracted[1];
-    var base = this.getBaseUrl();
-    var readerPageUrls = [];
-    var page = 0;
-    var maxThumbPages = 10;
+    const [gid, token] = extracted;
+    const base = this.getBaseUrl();
+    const readerPageUrls = [];
+    let page = 0;
+    const maxThumbPages = 10;
 
     while (page < maxThumbPages) {
-      var thumbPageUrl = base + "/g/" + gid + "/" + token + "/?p=" + page;
-      var res = await this.client.get(thumbPageUrl, this.getHeaders(thumbPageUrl));
+      const thumbPageUrl = `${base}/g/${gid}/${token}/?p=${page}`;
+      const res = await this.client.get(
+        thumbPageUrl,
+        this.getHeaders(thumbPageUrl),
+      );
       if (!res || !res.body) break;
 
-      var html = res.body;
-      var readerRegex = /(?:https?:\/\/[^\/]+)?\/s\/([a-zA-Z0-9]+)\/(\d+)-(\d+)/g;
-      var rMatch;
-      var pageFoundCount = 0;
+      const html = res.body;
+      const readerRegex =
+        /(?:https?:\/\/[^\/]+)?\/s\/([a-zA-Z0-9]+)\/(\d+)-(\d+)/g;
+      let rMatch;
+      let pageFoundCount = 0;
 
       while ((rMatch = readerRegex.exec(html)) !== null) {
-        var readerLink = base + "/s/" + rMatch[1] + "/" + rMatch[2] + "-" + rMatch[3];
-        if (readerPageUrls.indexOf(readerLink) === -1) {
+        const readerLink = `${base}/s/${rMatch[1]}/${rMatch[2]}-${rMatch[3]}`;
+        if (!readerPageUrls.includes(readerLink)) {
           readerPageUrls.push(readerLink);
           pageFoundCount++;
         }
       }
 
-      if (pageFoundCount === 0 || (!html.includes("onclick=\"return false\">" + (page + 2) + "</a>") && !html.includes("?p=" + (page + 1)))) {
+      if (
+        pageFoundCount === 0 ||
+        (!html.includes(`onclick="return false">${page + 2}</a>`) &&
+          !html.includes(`?p=${page + 1}`))
+      ) {
         break;
       }
 
       page++;
     }
 
-    var images = [];
-    var batchSize = 10;
+    const images = [];
+    const batchSize = 10;
 
-    for (var b = 0; b < readerPageUrls.length; b += batchSize) {
-      var batch = readerPageUrls.slice(b, b + batchSize);
-      var batchPromises = batch.map(async (rUrl) => {
-        try {
-          var rRes = await this.client.get(rUrl, this.getHeaders(rUrl));
-          if (rRes && rRes.body) {
-            var imgM = rRes.body.match(/<img[^>]+id=["']img["'][^>]+src=["']([^"']+)["']/i);
-            if (imgM) return imgM[1];
-          }
-        } catch (e) {}
-        return null;
-      });
+    for (let b = 0; b < readerPageUrls.length; b += batchSize) {
+      const batch = readerPageUrls.slice(b, b + batchSize);
+      const batchResults = await Promise.all(
+        batch.map(async (rUrl) => {
+          try {
+            const rRes = await this.client.get(rUrl, this.getHeaders(rUrl));
+            if (rRes && rRes.body) {
+              const imgM = rRes.body.match(
+                /<img[^>]+id=["']img["'][^>]+src=["']([^"']+)["']/i,
+              );
+              if (imgM) return imgM[1];
+            }
+          } catch (_) {}
+          return null;
+        }),
+      );
 
-      var batchResults = await Promise.all(batchPromises);
-      for (var r = 0; r < batchResults.length; r++) {
-        if (batchResults[r]) {
-          images.push(batchResults[r]);
-        }
+      for (const res of batchResults) {
+        if (res) images.push(res);
       }
     }
 
@@ -447,7 +482,11 @@ class DefaultExtension extends MProvider {
           { type_name: "SelectOption", name: "Russian", value: "russian" },
           { type_name: "SelectOption", name: "French", value: "french" },
           { type_name: "SelectOption", name: "German", value: "german" },
-          { type_name: "SelectOption", name: "Portuguese", value: "portuguese" },
+          {
+            type_name: "SelectOption",
+            name: "Portuguese",
+            value: "portuguese",
+          },
         ],
       },
       {
@@ -497,7 +536,8 @@ class DefaultExtension extends MProvider {
         key: "ehentai_pref_cookie",
         editTextPreference: {
           title: "Custom Cookie string",
-          summary: "Paste custom member cookie (e.g. ipb_member_id=...; ipb_pass_hash=...)",
+          summary:
+            "Paste custom member cookie (e.g. ipb_member_id=...; ipb_pass_hash=...)",
           value: "",
           dialogTitle: "Cookie string",
           dialogMessage: "Enter cookie key-value pairs separated by semicolons",
