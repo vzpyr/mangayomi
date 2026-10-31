@@ -1,0 +1,20 @@
+[
+  {
+    "name": "AniWorld",
+    "lang": "de",
+    "baseUrl": "https://aniworld.to",
+    "apiUrl": "",
+    "iconUrl": "https://aniworld.to/public/img/android-icon-192x192.png",
+    "typeSource": "single",
+    "itemType": 1,
+    "isNsfw": false,
+    "hasCloudflare": false,
+    "sourceCodeUrl": "https://raw.githubusercontent.com/vzpyr/mangayomi/main/js/anime/de/aniworld.js",
+    "version": "0.1.0",
+    "isManga": false,
+    "sourceCodeLanguage": 1,
+    "appMinVerReq": "",
+    "pkgPath": "js/anime/de/aniworld.js",
+    "id": 7255174968
+  }
+]

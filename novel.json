@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Baka-Tsuki",
+    "lang": "en",
+    "baseUrl": "https://www.baka-tsuki.org",
+    "apiUrl": "",
+    "iconUrl": "https://www.baka-tsuki.org/favicon.ico",
+    "typeSource": "single",
+    "itemType": 2,
+    "isNsfw": false,
+    "hasCloudflare": true,
+    "sourceCodeUrl": "https://raw.githubusercontent.com/vzpyr/mangayomi/main/js/novel/en/bakatsuki.js",
+    "version": "0.1.0",
+    "isManga": false,
+    "sourceCodeLanguage": 1,
+    "appMinVerReq": "",
+    "pkgPath": "js/novel/en/bakatsuki.js",
+    "id": 8244567358
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Atsumaru",
+    "lang": "en",
+    "baseUrl": "https://atsu.moe",
+    "apiUrl": "",
+    "iconUrl": "https://www.google.com/s2/favicons?sz=256&domain=https://atsu.moe",
+    "typeSource": "single",
+    "itemType": 0,
+    "isNsfw": false,
+    "hasCloudflare": true,
+    "sourceCodeUrl": "https://raw.githubusercontent.com/vzpyr/mangayomi/main/js/manga/en/atsumaru.js",
+    "version": "0.1.0",
+    "isManga": true,
+    "sourceCodeLanguage": 1,
+    "appMinVerReq": "",
+    "pkgPath": "js/manga/en/atsumaru.js",
+    "id": 4930017816
+  },
+  {
+    "name": "E-Hentai",
+    "lang": "all",
+    "baseUrl": "https://e-hentai.org",
+    "apiUrl": "",
+    "iconUrl": "https://e-hentai.org/favicon.ico",
+    "typeSource": "single",
+    "itemType": 0,
+    "isNsfw": true,
+    "hasCloudflare": true,
+    "sourceCodeUrl": "https://raw.githubusercontent.com/vzpyr/mangayomi/main/js/manga/all/ehentai.js",
+    "version": "0.1.0",
+    "isManga": true,
+    "sourceCodeLanguage": 1,
+    "appMinVerReq": "",
+    "pkgPath": "js/manga/all/ehentai.js",
+    "id": 6793553951
+  }
+]
